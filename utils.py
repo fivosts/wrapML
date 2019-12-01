@@ -1,5 +1,21 @@
 #!/usr/bin/env python
 import os
+import random
+
+#  Works for two sets
+def generate_splitted_exclusive(range_val, p):
+
+	label_sets = [[], []]
+	range_pool = set(range(1, range_val))
+	p_arr = [0] * int(p * range_val) + [1] * (range_val - int(p * range_val))
+	random.shuffle(p_arr)
+
+	for num in range_pool:
+		print(num)
+		print(p_arr[random.randint(0, len(p_arr) - 1)])
+		label_sets[p_arr[random.randint(0, len(p_arr) - 1)]].append(num)
+
+	return label_sets
 
 def set_trace_path(root_path, folder_lookup, excluded_labels = []):
 
