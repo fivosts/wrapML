@@ -53,7 +53,7 @@ class architecture:
 		trace_list, label_set = utils.set_trace_path(base_path + project_name, encoded_trace_folder, excluded_labels)
 
 		# Make sure split sets are correct
-		# Format: {'pass': [1, 3, 5], 'fail': [2, 4, 5, 6]}
+		# Format: {'pass': {1, 3, 5}, 'fail': {2, 4, 5, 6}}
 		for cat in split_trace_sets:
 			assert cat not in excluded_train_labels, "Category {} found in split set but has been excluded from training in the first place!"
 
