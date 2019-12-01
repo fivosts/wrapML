@@ -257,8 +257,7 @@ class architecture:
 			tr_pass_opt, tr_fail_opt = this.find_optimals(pass_fail_optimals['train']['pass'], pass_fail_optimals['train']['fail'])
 			val_pass_opt, val_fail_opt = this.find_optimals(pass_fail_optimals['validation']['pass'], pass_fail_optimals['validation']['fail'])
 
-			if (len(tr_pass_opt) != len(tr_fail_opt)) or (len(val_pass_opt) != len(val_fail_opt)):
-				assert False, "Optimal lists do not have the same length"
+			assert len(tr_pass_opt) != len(tr_fail_opt)) or (len(val_pass_opt) != len(val_fail_opt), "Optimal lists do not have the same length"
 
 			optimal_log_file.write("Training set optimal points:\n-----------------------\n\n")
 			for p, f in zip(tr_pass_opt, tr_fail_opt):
