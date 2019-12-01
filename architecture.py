@@ -374,6 +374,7 @@ class architecture:
 			for tr in range(1, category['num_traces'] + 1):
 				datapoint = this.process_trace(category['path'] + trace_name + str(tr) + category['extension'], encoding_size)
 				datapoint['label'] = category['label']
+				# This is unused
 				datapoint['index'] = tr
 				if datapoint['label'] in excluded_train_labels:
 					this.excluded_datapoints.append(datapoint)
