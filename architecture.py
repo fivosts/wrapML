@@ -371,7 +371,13 @@ class architecture:
 
 		for category in trace_path_list:
 			print(category['path'] + trace_name)
-			for tr in range(1, category['num_traces'] + 1):
+			
+			if category['label'] in split_trace_sets:
+				range_set = split_trace_sets[category]
+			else:
+				range_set = set(range(1, category['num_traces'] + 1)) 
+
+			for tr in range_set:
 				datapoint = this.process_trace(category['path'] + trace_name + str(tr) + category['extension'], encoding_size)
 				datapoint['label'] = category['label']
 				# This is unused
