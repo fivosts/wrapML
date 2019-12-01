@@ -257,7 +257,7 @@ class architecture:
 			tr_pass_opt, tr_fail_opt = this.find_optimals(pass_fail_optimals['train']['pass'], pass_fail_optimals['train']['fail'])
 			val_pass_opt, val_fail_opt = this.find_optimals(pass_fail_optimals['validation']['pass'], pass_fail_optimals['validation']['fail'])
 
-			assert len(tr_pass_opt) != len(tr_fail_opt)) or (len(val_pass_opt) != len(val_fail_opt), "Optimal lists do not have the same length"
+			assert (len(tr_pass_opt) == len(tr_fail_opt)) and (len(val_pass_opt) == len(val_fail_opt)), "Optimal lists do not have the same length"
 
 			optimal_log_file.write("Training set optimal points:\n-----------------------\n\n")
 			for p, f in zip(tr_pass_opt, tr_fail_opt):
@@ -364,7 +364,7 @@ class architecture:
 		return x_pareto, y_pareto
 
 	# TODO insert argument to select only specific folders for training. Done ?
-	def create_dataset(this, trace_path_list, trace_name, excluded_train_labels, encoding_size):
+	def create_dataset(this, trace_path_list, trace_name, excluded_train_labels, encoding_size, split_trace_sets):
 
 		this.dataset = []
 		this.excluded_datapoints = []
