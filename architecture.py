@@ -60,9 +60,6 @@ class architecture:
 		# Load the dataset
 		this.create_dataset(trace_list, trace_name, excluded_train_labels, encoding_size, split_trace_sets)	
 
-		print("Breakpoiant")
-		exit(1)
-
 		if mode == "training":
 
 			# Set-up the model path
@@ -371,7 +368,7 @@ class architecture:
 
 		for category in trace_path_list:
 			print(category['path'] + trace_name)
-			
+
 			if category['label'] in split_trace_sets:
 				range_set = split_trace_sets[category]
 			else:
