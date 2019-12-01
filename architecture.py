@@ -60,7 +60,7 @@ class architecture:
 		# Load the dataset
 		this.create_dataset(trace_list, trace_name, excluded_train_labels, encoding_size, split_trace_sets)	
 
-		print("Breakpoint")
+		print("Breakpoiant")
 		exit(1)
 
 		if mode == "training":
