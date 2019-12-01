@@ -6,14 +6,16 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from random import shuffle
+from pathlib import Path
 
+HOME_PATH = str(Path.home())
 
 class architecture:
 
 	def __init__(this):
 		return
 
-	def initialize_architecture(this, model_file, project_name, base_path = "/home/fivosts/trace_classification/", trace_name = "trace_",
+	def initialize_architecture(this, model_file, project_name, base_path = "{}/trace_classification/".format(HOME_PATH), trace_name = "trace_",
 																													encoded_trace_folder = "encoded_traces",
 																													excluded_labels = [],
 																													excluded_train_labels = [],
@@ -51,6 +53,9 @@ class architecture:
 
 		# Load the dataset
 		this.create_dataset(trace_list, trace_name, excluded_train_labels, encoding_size)	
+
+		print("Breakpoint")
+		exit(1)
 
 		if mode == "training":
 
