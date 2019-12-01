@@ -5,15 +5,15 @@ import random
 #  Works for two sets
 def generate_splitted_exclusive(range_val, p):
 
-	label_sets = [{}, {}]
+	label_sets = [set(), set()]
 	range_pool = set(range(1, range_val))
 	p_arr = [0] * int(p * range_val) + [1] * (range_val - int(p * range_val))
 	random.shuffle(p_arr)
 
 	for num in range_pool:
-		print(num)
-		print(p_arr[random.randint(0, len(p_arr) - 1)])
-		label_sets[p_arr[random.randint(0, len(p_arr) - 1)]].insert(num)
+		# print(num)
+		# print(p_arr[random.randint(0, len(p_arr) - 1)])
+		label_sets[p_arr[random.randint(0, len(p_arr) - 1)]].add(num)
 
 	return label_sets
 
