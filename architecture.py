@@ -370,7 +370,7 @@ class architecture:
 			print(category['path'] + trace_name)
 
 			if category['label'] in split_trace_sets:
-				range_set = split_trace_sets[category]
+				range_set = split_trace_sets[category['label']]
 			else:
 				range_set = set(range(1, category['num_traces'] + 1)) 
 
