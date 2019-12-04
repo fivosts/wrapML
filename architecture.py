@@ -22,6 +22,7 @@ class architecture:
 																													excluded_labels = [],
 																													excluded_train_labels = [],
 																													split_trace_sets = {},
+																													remake_dataset = False,
 																													encoding_size = 64, 
 																													global_variables = False,
 																													mode = "training", 
@@ -61,7 +62,8 @@ class architecture:
 
 		# Load the dataset only the first time.
 		# This condition dictates that you will use different objects for different datasets. Any better suggestion ? Maybe push some params to the constructor to make it safer ?
-		if this.dataset = []:
+		if this.dataset = [] or remake_dataset:
+			print("DBG: Fix again dataset")
 			this.create_dataset(trace_list, trace_name, excluded_train_labels, encoding_size, split_trace_sets)	
 
 		if mode == "training":
@@ -399,7 +401,6 @@ class architecture:
 
 		f = open(trace_path, 'r')
 		for line in f:
-
 
 			line_split = line.replace('\n', '').split(',')
 			if len(line_split) > 1:
