@@ -126,12 +126,12 @@ class architecture:
 		for func_line in input_trace['func_calls']:
 			encoded_ret = this.encode_value(this.model['ret_encoder'], func_line['trace_ret'])
 			encoded_arg = this.encode_value(this.model['arg_encoder'], func_line['trace_arg'])
-			encoded_lines.append(torch.cat((torch.cat((func_line['trace_func'], encoded_ret.unsqueeze(1)), 2), encoded_arg.unsqueeze(1)), 2).squeeze(0))
+			encoded_lines.append(torch.cat((torch.cat((func_line['trace_func'], encoded_ret.unsqueeze(1)), 2), encoded_arg.unsqueeze(1)), 2).squeeze(0).cuda())
 
 		if len(input_trace['trace_globals']) > 0:
 			global_tensor = this.encode_value(this.model['global_encoder'], input_trace['trace_globals'])
 
-		encoded_line_tensor = torch.randn(len(encoded_lines), 1, this.tr_encoding_size)
+		encoded_line_tensor = torch.randn(len(encoded_lines), 1, this.tr_encoding_size).cuda()
 		for index, line in enumerate(encoded_lines):
 			encoded_line_tensor[index] = line
 
