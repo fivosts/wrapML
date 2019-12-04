@@ -62,7 +62,7 @@ class architecture:
 
 		# Load the dataset only the first time.
 		# This condition dictates that you will use different objects for different datasets. Any better suggestion ? Maybe push some params to the constructor to make it safer ?
-		if this.dataset = [] or remake_dataset:
+		if (len(this.dataset) == 0) or remake_dataset:
 			print("DBG: Fix again dataset")
 			this.create_dataset(trace_list, trace_name, excluded_train_labels, encoding_size, split_trace_sets)	
 
