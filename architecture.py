@@ -211,9 +211,9 @@ class architecture:
 				out = this.execute_network(tr_data)
 
 				if "pass" in tr_data['label']:
-					target = torch.tensor([[1.]])
+					target = torch.tensor([[1.]]).cuda()
 				elif "fail" in tr_data['label']:
-					target = torch.tensor([[0.]])
+					target = torch.tensor([[0.]]).cuda()
 				else:
 					assert False, "Unrecognized label"
 
@@ -310,9 +310,9 @@ class architecture:
 				out = this.execute_network(in_data)
 
 				if "pass" in in_data['label']:
-					target = torch.tensor([[1.]])
+					target = torch.tensor([[1.]]).cuda()
 				elif "fail" in in_data['label']:
-					target = torch.tensor([[0.]])
+					target = torch.tensor([[0.]]).cuda()
 				else:
 					assert False, "Unrecognized label"
 
@@ -413,12 +413,12 @@ class architecture:
 	def str_to_tensor(this, str_list, encoding_size):
 
 		if encoding_size == 0:
-			tensor = torch.FloatTensor(list(map(float, str_list))).unsqueeze(0).unsqueeze(0)
+			tensor = torch.FloatTensor(list(map(float, str_list))).unsqueeze(0).unsqueeze(0).cuda()
 			this.test_tensor(tensor)
 			return tensor
 		else:
 			float_list = list(map(float, str_list))
-			tensor = torch.randn(int(len(float_list) / encoding_size), encoding_size)
+			tensor = torch.randn(int(len(float_list) / encoding_size), encoding_size).cuda()
 			for index, item in enumerate(float_list):
 				tensor[int(index / encoding_size)][index % encoding_size] = item
 			tensor = tensor.unsqueeze(1)
@@ -478,7 +478,7 @@ class architecture:
 		if layer['type'] == "lstm":
 
 			if load_model != "":
-				nn_layer = torch.load("{}.pt".format(load_model))
+				nn_layer = torch.load("{}.pt".format(load_model)).cuda()
 				nn_layer.eval()
 			else:
 				nn_layer = nn.LSTM(input_size = layer['params']['input_size'], 
@@ -487,7 +487,7 @@ class architecture:
 									bias = layer['params']['bias'], 
 									batch_first = layer['params']['batch_first'], 
 									dropout = layer['params']['dropout'], 
-									bidirectional = layer['params']['bidirectional'])
+									bidirectional = layer['params']['bidirectional']).cuda()
 
 			return {'model': nn_layer,
 					'type': "lstm",
@@ -499,24 +499,24 @@ class architecture:
 
 			mlp = {'model': [], 'type': "mlp", 'input': layer['input']}
 			if load_model != "":
-				fc_layer = torch.load("{}_0.pt".format(load_model))
+				fc_layer = torch.load("{}_0.pt".format(load_model)).cuda()
 				fc_layer.eval()
 				mlp['model'].append(fc_layer)
 			else:
 				mlp['model'].append(nn.Linear(in_features = layer['params']['in_features'], 
 												out_features = layer['params']['out_features'][0], 
-												bias = layer['params']['bias']))
+												bias = layer['params']['bias']).cuda())
 
 			for l in range(1, len(layer['params']['out_features'])):
 				
 				if load_model != "":
-					fc_layer = torch.load("{}_{}.pt".format(load_model, l))
+					fc_layer = torch.load("{}_{}.pt".format(load_model, l)).cuda()
 					fc_layer.eval()
 					mlp['model'].append(fc_layer)
 				else:
 					mlp['model'].append(nn.Linear(in_features = layer['params']['out_features'][l - 1], 
 													out_features = layer['params']['out_features'][l],
-													bias = layer['params']['bias'] ) )
+													bias = layer['params']['bias'] ).cuda() )
 
 			return mlp
 		elif layer['type'] == "sigmoid":
