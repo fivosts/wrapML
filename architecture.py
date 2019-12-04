@@ -13,6 +13,8 @@ HOME_PATH = str(Path.home())
 class architecture:
 
 	def __init__(this):
+		this.dataset = []
+		this.excluded_datapoints = []
 		return
 
 	def initialize_architecture(this, model_file, project_name, base_path = "{}/trace_classification/".format(HOME_PATH), trace_name = "trace_",
@@ -57,8 +59,10 @@ class architecture:
 		for cat in split_trace_sets:
 			assert cat not in excluded_train_labels, "Category {} found in split set but has been excluded from training in the first place!"
 
-		# Load the dataset
-		this.create_dataset(trace_list, trace_name, excluded_train_labels, encoding_size, split_trace_sets)	
+		# Load the dataset only the first time.
+		# This condition dictates that you will use different objects for different datasets. Any better suggestion ? Maybe push some params to the constructor to make it safer ?
+		if this.dataset = []:
+			this.create_dataset(trace_list, trace_name, excluded_train_labels, encoding_size, split_trace_sets)	
 
 		if mode == "training":
 
@@ -367,9 +371,6 @@ class architecture:
 
 	# TODO insert argument to select only specific folders for training. Done ?
 	def create_dataset(this, trace_path_list, trace_name, excluded_train_labels, encoding_size, split_trace_sets):
-
-		this.dataset = []
-		this.excluded_datapoints = []
 
 		for category in trace_path_list:
 			print(category['path'] + trace_name)
