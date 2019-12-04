@@ -144,8 +144,8 @@ class architecture:
 
 		this.test_tensor(inp_tensor)
 
-		h0 = torch.randn(1, 1, model['hidden_size'])
-		c0 = torch.randn(1, 1, model['hidden_size'])
+		h0 = torch.randn(1, 1, model['hidden_size']).cuda()
+		c0 = torch.randn(1, 1, model['hidden_size']).cuda()
 
 		out, hn = model['model'](inp_tensor, (h0, c0))
 		this.test_tensor(out)
