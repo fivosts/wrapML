@@ -68,8 +68,11 @@ class architecture:
 					utils.mkdirs(base_path + project_name + "model/model_1")
 					model_path = base_path + project_name + "model/model_1/" # TODO 
 				else:
-					utils.mkdirs(base_path + project_name + "model/", model_path.replace("/", ""))
-					model_path = base_path + project_name + "model/" + model_path.replace("/", "") + "/"
+					if model_path[-1] == "/":
+						model_path = model_path[:-1]
+					subfolder = model_path.split('/')
+					utils.mkdirs(base_path + project_name + "model/", subfolder[0].replace("/", ""), subfolders = subfolder[1:])
+					model_path = base_path + project_name + "model/" + '/'.join(subfolder) + "/"
 				print(model_path)
 
 			opt, loss = this.set_train_params(optimizer, learning_rate, loss_function)
