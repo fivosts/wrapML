@@ -70,6 +70,8 @@ class architecture:
 				else:
 					if model_path[-1] == "/":
 						model_path = model_path[:-1]
+					while '//' in model_path:
+						model_path = model_path.replace('//', '/')
 					subfolder = model_path.split('/')
 					utils.mkdirs(base_path + project_name + "model/", subfolder[0].replace("/", ""), subfolders = subfolder[1:])
 					model_path = base_path + project_name + "model/" + '/'.join(subfolder) + "/"
