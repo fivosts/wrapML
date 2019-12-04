@@ -266,18 +266,18 @@ class architecture:
 				metrics = utils.add_perc_metrics({'pass': {'matches': p, 'total': pass_total}, 'fail': {'matches': f, 'total': fail_total}}, )
 				optimal_log_file.write("pass matches: {}\nfail matches: {}\nprecision: {}\nrecall: {}\nTNR: {}\n\n".format(p, 
 																															f, 
-																															precision, 
-																															recall,
-																															tnr))
+																															metrics['precision'], 
+																															metrics['recall'],
+																															metrics['true_neg_rate']))
 
 			optimal_log_file.write("Validation set optimal points:\n-----------------------\n\n")
 			for p, f in zip(val_pass_opt, val_fail_opt):
 				metrics = utils.add_perc_metrics({'pass': {'matches': p, 'total': pass_total}, 'fail': {'matches': f, 'total': fail_total}}, )
 				optimal_log_file.write("pass matches: {}\nfail matches: {}\nprecision: {}\nrecall: {}\nTNR: {}\n\n".format(p, 
 																															f, 
-																															precision, 
-																															recall,
-																															tnr))
+																															metrics['precision'], 
+																															metrics['recall'],
+																															metrics['true_neg_rate']))
 
 			optimal_log_file.close()
 
