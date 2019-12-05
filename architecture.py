@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.optim as optim
 from random import shuffle
 from pathlib import Path
-
+torch.cuda.init()
 HOME_PATH = str(Path.home())
 
 class architecture:
@@ -137,7 +137,9 @@ class architecture:
 		if len(input_trace['trace_globals']) > 0:
 			global_tensor = this.encode_value(this.model['global_encoder'], input_trace['trace_globals'])
 
-		encoded_line_tensor = torch.randn(len(encoded_lines), 1, this.tr_encoding_size).cuda()
+		encoded_line_tensor = torch.randn(len(encoded_lines), 1, this.tr_encoding_size)
+		encoded_line_tensor = encoded_line_tensor.cuda()
+
 		for index, line in enumerate(encoded_lines):
 			encoded_line_tensor[index] = line
 
@@ -415,15 +417,17 @@ class architecture:
 	def str_to_tensor(this, str_list, encoding_size):
 
 		if encoding_size == 0:
-			tensor = torch.FloatTensor(list(map(float, str_list))).unsqueeze(0).unsqueeze(0).cuda()
+			tensor = torch.FloatTensor(list(map(float, str_list))).unsqueeze(0).unsqueeze(0)
+			tensor = tensor.cuda()
 			this.test_tensor(tensor)
 			return tensor
 		else:
 			float_list = list(map(float, str_list))
-			tensor = torch.randn(int(len(float_list) / encoding_size), encoding_size).cuda()
+			tensor = torch.randn(int(len(float_list) / encoding_size), encoding_size)
 			for index, item in enumerate(float_list):
 				tensor[int(index / encoding_size)][index % encoding_size] = item
 			tensor = tensor.unsqueeze(1)
+			tensor = tensor.cuda()
 			this.test_tensor(tensor)
 			return tensor
 
