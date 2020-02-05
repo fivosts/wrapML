@@ -3,6 +3,7 @@ import smtplib, ssl, imaplib
 from email.mime.text import MIMEText
 import email
 import subprocess
+from datetime import datetime
 
 class mail_agent:
 
@@ -24,13 +25,15 @@ class mail_agent:
         message['Subject'] = "{} crashed!".format(reporting_module)
         message['From'] = sender
         message['To'] = receiver
+        message['Sent'] = str(datetime.now())
 
         context = ssl.create_default_context()
         with smtplib.SMTP_SSL(this.smtp_server, this.port, context=context) as server:
-            print(this.sender_email)
-            print(this.password)
             server.login(this.sender_email, this.password)
             server.sendmail(this.sender_email, this.receiver_email, message.as_string())
+
+        if request_reply:
+        	this.mailbox_check_wait(message['To'], message['Sent'])
 
         return
 
@@ -49,6 +52,8 @@ class mail_agent:
 
         result, data = mail.fetch(latest_email_id, "(UID BODY[TEXT])") # fetch the email body (RFC822) for the given ID
 
+        result, data = this.fetch_mail()
+
         for response_part in data:
             if isinstance(response_part, tuple):
                 msg = email.message_from_bytes(response_part[1]).as_string().split('\n')
@@ -62,6 +67,10 @@ class mail_agent:
         print(out.decode("utf-8"))
         return
 
+    def mailbox_check_wait(this, receiver, timestamp):
+
+    	return
+
 mail = mail_agent()
-# mail.broadcast_error("Random module", "Hello from the other side !")
-mail.receive_instruction()
+mail.broadcast_error("Random module", "Hello from the other side !")
+# mail.receive_instruction()
