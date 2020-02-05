@@ -58,9 +58,12 @@ def mkdirs(base_folder, new_folder_name, subfolders = [], assert_if_exists = Fal
 			os.mkdir(base_folder + new_folder_name.replace("/", "") + "/" + subfolder)
 		except FileExistsError:
 			assert (not assert_if_exists), "Folder {} already exists".format(subfolder)
-
 	return
 
+## Delete list of folders and/or files inside base_folder
+## base_folder: The base folder where files and folders will be removed
+## delete_folders: list of child folders to be deleted
+## delete_files: set to True to remove files of the iterated base_folder
 def cleardirs(base_folder, delete_folders = [], delete_files = False):
 
 	if base_folder[-1] != "/":
