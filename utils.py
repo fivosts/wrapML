@@ -35,6 +35,7 @@ def set_trace_path(root_path, folder_lookup, excluded_labels = []):
 
 	return trace_paths, label_set
 
+## Parses the whitespaces on an input string
 def parse_whitespace(inp_str): # Removes whitespaces recursively
 	if " " in inp_str or '\t' in inp_str:
 		inp_str = inp_str.replace(" ", "").replace('\t', '')
