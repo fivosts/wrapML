@@ -16,15 +16,15 @@ class mail_agent:
     def __init__(this):
         return
 
-    def broadcast_error(this, reporting_module, error, sender = "ml.framew@gmail.com", receiver = "fivos_ts@hotmail.com", request_reply = False):
+    def broadcast_error(this, reporting_module, error, request_reply = False):
 
         if this.password == "":
             assert False, "SMTP Server password for {} not specified!".format(sender_email)
 
         message = MIMEText("Error Reported:\n\n---------------------------------------\n{}\n---------------------------------------\n\nError reported by ML mail agent".format(error))
         message['Subject'] = "{} crashed!".format(reporting_module)
-        message['From'] = sender
-        message['To'] = receiver
+        message['From'] = this.sender_email
+        message['To'] = this.receiver_email
         message['Sent'] = str(datetime.now())
 
         context = ssl.create_default_context()
@@ -33,7 +33,7 @@ class mail_agent:
             server.sendmail(this.sender_email, this.receiver_email, message.as_string())
 
         if request_reply:
-        	this.mailbox_check_wait(message['To'], message['Sent'])
+            this.mailbox_check_wait(message['To'], message['Sent'])
 
         return
 
@@ -58,9 +58,9 @@ class mail_agent:
             if isinstance(response_part, tuple):
                 msg = email.message_from_bytes(response_part[1]).as_string().split('\n')
                 for line in msg:
-                	if "$cmd" in line:
-                		command = line.split(':')[1]
-                		break
+                    if "$cmd" in line:
+                        command = line.split(':')[1]
+                        break
 
         proc = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
         out, err = proc.communicate()
@@ -69,7 +69,19 @@ class mail_agent:
 
     def mailbox_check_wait(this, receiver, timestamp):
 
-    	return
+        return
+
+    def fetch_mail(this):
+
+        mail = imaplib.IMAP4_SSL('imap.gmail.com')
+        mail.login(this.sender_email, this.password)
+        mail.list()
+
+        # Out: list of "folders" aka labels in gmail.
+        mail.select("inbox", readonly=True) # connect to inbox.
+        result, data = mail.search(None, "ALL")
+
+        return result, data
 
 mail = mail_agent()
 mail.broadcast_error("Random module", "Hello from the other side !")
