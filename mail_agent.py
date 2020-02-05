@@ -48,8 +48,6 @@ class mail_agent:
         latest_email_id = id_list[-1] # get the latest
 
         result, data = mail.fetch(latest_email_id, "(UID BODY[TEXT])") # fetch the email body (RFC822) for the given ID
-        raw_email = data[0][1] # here's the body, which is raw text of the whole email
-        # including headers and alternate payloads
 
         command = ""
         for response_part in data:
