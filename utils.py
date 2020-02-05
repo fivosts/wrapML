@@ -51,15 +51,13 @@ def mkdirs(base_folder, new_folder_name, subfolders = [], assert_if_exists = Fal
 	try:
 		os.mkdir(base_folder + new_folder_name)
 	except FileExistsError:
-		if assert_if_exists == True:
-			assert False, "Folder {} already exists".format(new_folder_name)
+		assert (not assert_if_exists), "Folder {} already exists".format(new_folder_name)
 
 	for subfolder in subfolders:
 		try:
 			os.mkdir(base_folder + new_folder_name.replace("/", "") + "/" + subfolder)
 		except FileExistsError:
-			if assert_if_exists == True:
-				assert False, "Folder {} already exists".format(subfolder)
+			assert (not assert_if_exists), "Folder {} already exists".format(subfolder)
 
 	return
 
