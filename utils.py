@@ -41,6 +41,11 @@ def parse_whitespace(inp_str): # Removes whitespaces recursively
 		inp_str = parse_whitespace(inp_str)
 	return inp_str
 
+## Create new folders recursively in the directory tree
+## base_folder: the directory where the new folder will be created
+## new_folder_name: The name of the new folder
+## subfolders: list of subfolers to be created inside the new folder
+## assert_if_exists: Raise assertion if folder exists
 def mkdirs(base_folder, new_folder_name, subfolders = [], assert_if_exists = False):
 
 	try:
