@@ -39,21 +39,7 @@ class mail_agent:
 
     def receive_instruction(this):
 
-        mail = imaplib.IMAP4_SSL('imap.gmail.com')
-        mail.login(this.sender_email, this.password)
-        mail.list()
-
-        # Out: list of "folders" aka labels in gmail.
-        mail.select("inbox", readonly=True) # connect to inbox.
-        result, data = mail.search(None, "ALL")
-
-        id_list = data[0].split() # ids is a space separated string
-        latest_email_id = id_list[-1] # get the latest
-
-        result, data = mail.fetch(latest_email_id, "(UID BODY[TEXT])") # fetch the email body (RFC822) for the given ID
-
         result, data = this.fetch_mail()
-
         for response_part in data:
             if isinstance(response_part, tuple):
                 msg = email.message_from_bytes(response_part[1]).as_string().split('\n')
@@ -80,9 +66,12 @@ class mail_agent:
         # Out: list of "folders" aka labels in gmail.
         mail.select("inbox", readonly=True) # connect to inbox.
         result, data = mail.search(None, "ALL")
+        id_list = data[0].split() # ids is a space separated string
+        latest_email_id = id_list[-1] # get the latest
+        result, data = mail.fetch(latest_email_id, "(UID BODY[TEXT])") # fetch the email body (RFC822) for the given ID
 
         return result, data
 
 mail = mail_agent()
-mail.broadcast_error("Random module", "Hello from the other side !")
-# mail.receive_instruction()
+# mail.broadcast_error("Random module", "Hello from the other side !")
+mail.receive_instruction()
