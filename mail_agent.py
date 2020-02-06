@@ -23,7 +23,6 @@ class mail_agent:
             assert False, "SMTP Server password for {} not specified!".format(sender_email)
 
         message = this.generate_message(reporting_module, error)
-
         this.send_message(message)
 
         if request_reply:
@@ -91,7 +90,6 @@ class mail_agent:
             time.sleep(10)
             r, d = this.fetch_mail()
             msg = this.extract_email(d)
-
         return
 
     def fetch_mail(this, encoding = "(RFC822)"):
