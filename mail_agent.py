@@ -4,6 +4,7 @@ from email.mime.text import MIMEText
 import email
 import subprocess
 from datetime import datetime
+import time
 
 class mail_agent:
 
@@ -30,34 +31,49 @@ class mail_agent:
         context = ssl.create_default_context()
         with smtplib.SMTP_SSL(this.smtp_server, this.port, context=context) as server:
             server.login(this.sender_email, this.password)
-            server.sendmail(this.sender_email, this.receiver_email, message.as_string())
+            # server.sendmail(this.sender_email, this.receiver_email, message.as_string())
 
         if request_reply:
-            this.mailbox_check_wait(message['To'], message['Sent'])
+            this.mailbox_check_wait(message)
 
         return
 
     def receive_instruction(this):
 
-        result, data = this.fetch_mail()
-        for response_part in data:
-            if isinstance(response_part, tuple):
-                msg = email.message_from_bytes(response_part[1]).as_string().split('\n')
-                for line in msg:
-                    if "$cmd" in line:
-                        command = ":".join(line.split(':')[1:])
-                        break
+        r, d = this.fetch_mail(encoding = "(UID BODY[TEXT])")
+        msg = this.extract_email(d).as_string().split('\n')
+
+        for line in msg:
+            if "$cmd" in line:
+                command = ":".join(line.split(':')[1:])
+                break
 
         proc = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
         out, err = proc.communicate()
         print(out.decode("utf-8"))
         return
 
-    def mailbox_check_wait(this, receiver, timestamp):
+    def extract_email(this, data):
 
+        for response_part in data:
+            if isinstance(response_part, tuple):
+                return email.message_from_bytes(response_part[1])
+
+        assert False, "Main email cannot be extracted: Wrong format!"
+
+    def mailbox_check_wait(this, message):
+
+        while True:
+            
+            r, d = this.fetch_mail()
+            msg = this.extract_email(d)
+            if message['Subject'] in msg['Subject'] and message['To'] in msg['From']:
+                print("Yay!")
+            time.sleep(10)
+                    # print(msg)
         return
 
-    def fetch_mail(this):
+    def fetch_mail(this, encoding = "(RFC822)"):
 
         mail = imaplib.IMAP4_SSL('imap.gmail.com')
         mail.login(this.sender_email, this.password)
@@ -68,10 +84,11 @@ class mail_agent:
         result, data = mail.search(None, "ALL")
         id_list = data[0].split() # ids is a space separated string
         latest_email_id = id_list[-1] # get the latest
-        result, data = mail.fetch(latest_email_id, "(UID BODY[TEXT])") # fetch the email body (RFC822) for the given ID
+        result, data = mail.fetch(latest_email_id, encoding) # fetch the email body (RFC822) for the given ID
 
         return result, data
 
 mail = mail_agent()
-# mail.broadcast_error("Random module", "Hello from the other side !")
-mail.receive_instruction()
+mail.broadcast_error("Random module", "Hello from the other side !", request_reply = True)
+# mail.receive_instruction()
+# mail.mailbox_check_wait("hello")
