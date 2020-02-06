@@ -63,14 +63,14 @@ class mail_agent:
 
     def mailbox_check_wait(this, message):
 
-        while True:
-            
+        r, d = this.fetch_mail()
+        msg = this.extract_email(d)
+
+        while not (message['Subject'] in msg['Subject'] and message['To'] in msg['From']):            
+            time.sleep(10)
             r, d = this.fetch_mail()
             msg = this.extract_email(d)
-            if message['Subject'] in msg['Subject'] and message['To'] in msg['From']:
-                print("Yay!")
-            time.sleep(10)
-                    # print(msg)
+
         return
 
     def fetch_mail(this, encoding = "(RFC822)"):
