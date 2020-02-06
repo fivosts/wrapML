@@ -31,10 +31,12 @@ class mail_agent:
         context = ssl.create_default_context()
         with smtplib.SMTP_SSL(this.smtp_server, this.port, context=context) as server:
             server.login(this.sender_email, this.password)
-            # server.sendmail(this.sender_email, this.receiver_email, message.as_string())
+            server.sendmail(this.sender_email, this.receiver_email, message.as_string())
 
         if request_reply:
             this.mailbox_check_wait(message)
+            cmd = this.receive_instruction()
+            this.execute_instructions(cmd)
 
         return
 
@@ -42,15 +44,25 @@ class mail_agent:
 
         r, d = this.fetch_mail(encoding = "(UID BODY[TEXT])")
         msg = this.extract_email(d).as_string().split('\n')
+        command = []
 
         for line in msg:
             if "$cmd" in line:
-                command = ":".join(line.split(':')[1:])
+                command_str = ":".join(line.split(':')[1:])
+                print(command_str)
+                print(type(command_str))
+                command = command_str.split(';')
                 break
 
-        proc = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
-        out, err = proc.communicate()
-        print(out.decode("utf-8"))
+        assert len(command) != 0, "Command field not extracted successfully!"
+        return command
+
+    def execute_instructions(this, cmd):
+
+        for c in cmd:
+            proc = subprocess.Popen(c.split(), stdout=subprocess.PIPE)
+            out, err = proc.communicate()
+            print(out.decode("utf-8"))
         return
 
     def extract_email(this, data):
@@ -66,7 +78,7 @@ class mail_agent:
         r, d = this.fetch_mail()
         msg = this.extract_email(d)
 
-        while not (message['Subject'] in msg['Subject'] and message['To'] in msg['From']):            
+        while not (message['Subject'] in msg['Subject'] and message['To'] in msg['From']):     
             time.sleep(10)
             r, d = this.fetch_mail()
             msg = this.extract_email(d)
@@ -89,6 +101,6 @@ class mail_agent:
         return result, data
 
 mail = mail_agent()
-mail.broadcast_error("Random module", "Hello from the other side !", request_reply = True)
+mail.broadcast_error("Training new script", "Something veeeerry bad happened!!!", request_reply = True)
 # mail.receive_instruction()
 # mail.mailbox_check_wait("hello")
