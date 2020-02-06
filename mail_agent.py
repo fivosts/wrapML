@@ -22,22 +22,31 @@ class mail_agent:
         if this.password == "":
             assert False, "SMTP Server password for {} not specified!".format(sender_email)
 
-        message = MIMEText("Error Reported:\n\n---------------------------------------\n{}\n---------------------------------------\n\nError reported by ML mail agent".format(error))
-        message['Subject'] = "{} crashed!".format(reporting_module)
-        message['From'] = this.sender_email
-        message['To'] = this.receiver_email
-        message['Sent'] = str(datetime.now())
+        message = this.generate_message(reporting_module, error)
 
-        context = ssl.create_default_context()
-        with smtplib.SMTP_SSL(this.smtp_server, this.port, context=context) as server:
-            server.login(this.sender_email, this.password)
-            server.sendmail(this.sender_email, this.receiver_email, message.as_string())
+        this.send_message(message)
 
         if request_reply:
             this.mailbox_check_wait(message)
             cmd = this.receive_instruction()
             this.execute_instructions(cmd)
 
+        return
+
+    def generate_message(this, rm, e):
+        message = MIMEText("Error Reported:\n\n---------------------------------------\n{}\n---------------------------------------\n\nError reported by mail agent".format(e))
+        message['Subject'] = "{}".format(rm)
+        message['From'] = this.sender_email
+        message['To'] = this.receiver_email
+        message['Sent'] = str(datetime.now())
+        return message
+
+    def send_message(this, message):
+
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL(this.smtp_server, this.port, context=context) as server:
+            server.login(this.sender_email, this.password)
+            server.sendmail(this.sender_email, this.receiver_email, message.as_string())
         return
 
     def receive_instruction(this):
