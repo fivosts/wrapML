@@ -39,6 +39,7 @@ class preprocessor:
 		trace_path_list, label_set = utils.set_trace_path(base_path + project_name + "/", starting_folder.replace("/", ""))
 		for cat in trace_path_list:
 			cat['path'] = cat['path'].replace(starting_folder.replace("/", "") + "/", "")
+			print(cat['path'])
 		trace_list = this.traces_to_list(trace_path_list, trace_name, starting_folder)
 	
 		if trace_reduce == True:
@@ -58,6 +59,9 @@ class preprocessor:
 
 	def trace_reduction(this, trace_list, trace_name, below_keyword, keep_only_argret, excluded_keywords, post_call_key, start_size, end_size, preprocess_roper):
 
+		print(len(trace_list))
+		for i in trace_list:
+			print(len(trace_list[i]))
 		trace_list = this.reduce_traces_below_keyword(trace_list, below_keyword, trace_name)
 		trace_list = this.reduce_traces_keep_argret(trace_list, trace_name, keep_only_argret)
 		trace_list = this.reduce_traces_exclude_keyword(trace_list, excluded_keywords)
@@ -91,22 +95,26 @@ class preprocessor:
 		errors = []
 		for path in trace_path_list:
 			trace_list[path['path']] = []
-			for trace in range(1, path['num_traces'] + 1):
+			
+			for trace_file in os.listdir(path['path'] + subfolder):
+
 				file_list = []
-				try:
-					f = open(path['path'] + "{}/{}{}.log".format(subfolder, trace_name, trace), 'r', errors = 'ignore')
-				except FileNotFoundError:
-					errors.append("File {} not found".format(path['path'] + "{}/{}{}.log".format(subfolder, trace_name, trace)))
-					continue
-				try:
-					for line in f:
-						file_list.append(line)
-				except UnicodeDecodeError:
-					errors.append("File {} is binary".format(path['path'] + "{}/{}{}.log".format(subfolder, trace_name, trace)))
-					continue
-				if len(file_list) > 0:
-					trace_list[path['path']].append(file_list)
-				f.close()
+
+				if not os.path.isdir(path['path'] + "{}/{}".format(subfolder, trace_file)):
+					try:
+						f = open(path['path'] + "{}/{}".format(subfolder, trace_file), 'r', errors = 'ignore')
+					except FileNotFoundError:
+						errors.append("File {} not found".format(path['path'] + "{}/{}".format(subfolder, trace_file)))
+						continue
+					try:
+						for line in f:
+							file_list.append(line)
+					except UnicodeDecodeError:
+						errors.append("File {} is binary".format(path['path'] + "{}/{}".format(subfolder, trace_file)))
+						continue
+					if len(file_list) > 0:
+						trace_list[path['path']].append(file_list)
+					f.close()
 
 		for error in errors:
 			print(error)
