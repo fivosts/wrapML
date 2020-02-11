@@ -39,7 +39,6 @@ class preprocessor:
 		trace_path_list, label_set = utils.set_trace_path(base_path + project_name + "/", starting_folder.replace("/", ""))
 		for cat in trace_path_list:
 			cat['path'] = cat['path'].replace(starting_folder.replace("/", "") + "/", "")
-			print(cat['path'])
 		trace_list = this.traces_to_list(trace_path_list, trace_name, starting_folder)
 	
 		if trace_reduce == True:
@@ -59,9 +58,6 @@ class preprocessor:
 
 	def trace_reduction(this, trace_list, trace_name, below_keyword, keep_only_argret, excluded_keywords, post_call_key, start_size, end_size, preprocess_roper):
 
-		print(len(trace_list))
-		for i in trace_list:
-			print(len(trace_list[i]))
 		trace_list = this.reduce_traces_below_keyword(trace_list, below_keyword, trace_name)
 		trace_list = this.reduce_traces_keep_argret(trace_list, trace_name, keep_only_argret)
 		trace_list = this.reduce_traces_exclude_keyword(trace_list, excluded_keywords)
