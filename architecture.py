@@ -71,7 +71,7 @@ class architecture:
 			# Set-up the model path
 			if save_model == True or save_training_log == True or save_model_specs == True or save_trace_distr == True:
 				if model_path == "":
-					utils.mkdirs(base_path + project_name + "model/model_1")
+					utils.mkdirs(base_path + project_name + "model/", "model_1")
 					model_path = base_path + project_name + "model/model_1/" # TODO 
 				else:
 					if model_path[-1] == "/":
