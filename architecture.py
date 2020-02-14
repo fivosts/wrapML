@@ -114,10 +114,10 @@ class architecture:
 			assert False, ("Optimizer {} not supported".format(opt))
 
 		if loss == "BCELoss" or loss == "bceloss" or loss == "BCELOSS" or loss == "BCEloss":
-			loss = nn.BCELoss()
+			loss = nn.functional.binary_cross_entropy
 			if this.model[this.output_layer]['type'] == "sigmoid":
 				print("Automaticaly combining output sigmoid and BCELoss to BCEWithLogitsLoss")
-				loss = nn.BCEWithLogitsLoss()
+				loss = nn.functional.binary_cross_entropy_with_logits
 				prev_out_layer = this.output_layer
 				this.output_layer = this.model[this.output_layer]['input'][0]
 				del this.model[prev_out_layer]
