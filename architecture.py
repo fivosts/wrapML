@@ -407,7 +407,7 @@ class architecture:
 				else:
 					this.dataset.append(datapoint)
 		for i in this.loss_weights:
-			this.loss_weights[i] = torch.FloatTensor([this.loss_weights[i] / total_size])
+			this.loss_weights[i] = torch.FloatTensor([this.loss_weights[i] / total_size]).cuda()
 		print("Loss weights for classes: " + str(this.loss_weights))
 		
 		return
