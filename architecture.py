@@ -116,7 +116,7 @@ class architecture:
 		if loss == "BCELoss" or loss == "bceloss" or loss == "BCELOSS" or loss == "BCEloss":
 			loss = nn.functional.binary_cross_entropy
 			if this.model[this.output_layer]['type'] == "sigmoid":
-				print("Automaticaly combining output sigmoid and BCELoss to BCEWithLogitsLoss")
+				print("Automatically combining output sigmoid and BCELoss to BCEWithLogitsLoss")
 				loss = nn.functional.binary_cross_entropy_with_logits
 				prev_out_layer = this.output_layer
 				this.output_layer = this.model[this.output_layer]['input'][0]
