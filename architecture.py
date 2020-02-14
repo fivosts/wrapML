@@ -15,6 +15,7 @@ class architecture:
 	def __init__(this):
 		this.dataset = []
 		this.excluded_datapoints = []
+		this.loss_weights = {}
 		return
 
 	def initialize_architecture(this, model_file, project_name, base_path = "{}/trace_classification/".format(HOME_PATH), trace_name = "trace_",
@@ -114,10 +115,10 @@ class architecture:
 			assert False, ("Optimizer {} not supported".format(opt))
 
 		if loss == "BCELoss" or loss == "bceloss" or loss == "BCELOSS" or loss == "BCEloss":
-			loss = nn.functional.binary_cross_entropy
+			loss = {'function': nn.functional.binary_cross_entropy, 'weight': this.loss_weights}
 			if this.model[this.output_layer]['type'] == "sigmoid":
 				print("Automatically combining output sigmoid and BCELoss to BCEWithLogitsLoss")
-				loss = nn.functional.binary_cross_entropy_with_logits
+				loss = {'function': nn.functional.binary_cross_entropy_with_logits, 'weight': this.loss_weights}
 				prev_out_layer = this.output_layer
 				this.output_layer = this.model[this.output_layer]['input'][0]
 				del this.model[prev_out_layer]
@@ -219,13 +220,15 @@ class architecture:
 				out = this.execute_network(tr_data)
 
 				if "pass" in tr_data['label']:
-					target = torch.tensor([[1.]]).cuda()
+					target = torch.tensor([[1.]])
+					weight = loss_function['weight']['pass']
 				elif "fail" in tr_data['label']:
-					target = torch.tensor([[0.]]).cuda()
+					target = torch.tensor([[0.]])
+					weight = loss_function['weight']['fail']
 				else:
 					assert False, "Unrecognized label"
 
-				loss = loss_function(out, target)
+				loss = loss_function['function'](out, target, weight=weight)
 				loss.backward()
 				optimizer.step()
 
@@ -376,8 +379,18 @@ class architecture:
 	# TODO insert argument to select only specific folders for training. Done ?
 	def create_dataset(this, trace_path_list, trace_name, excluded_train_labels, encoding_size, split_trace_sets):
 
+		this.loss_weights = {'pass': 0.0, 'fail': 0.0}
+		this.dataset = []
+		total_size = 0
+
 		for category in trace_path_list:
 			print(category['path'] + trace_name)
+
+			if "fail" in category['label']:
+				this.loss_weights['pass'] += category['num_traces']
+			else:
+				this.loss_weights['fail'] += category['num_traces']
+			total_size += category['num_traces']
 
 			if category['label'] in split_trace_sets:
 				range_set = split_trace_sets[category['label']]
@@ -393,7 +406,10 @@ class architecture:
 					this.excluded_datapoints.append(datapoint)
 				else:
 					this.dataset.append(datapoint)
-
+		for i in this.loss_weights:
+			this.loss_weights[i] = torch.FloatTensor([this.loss_weights[i] / total_size])
+		print("Loss weights for classes: " + str(this.loss_weights))
+		
 		return
 
 	def process_trace(this, trace_path, encoding_size):
