@@ -9,6 +9,7 @@ from random import shuffle
 import architecture as arc
 from collections import defaultdict
 import itertools
+import struct
 
 class preprocessor:
 
@@ -591,8 +592,10 @@ class preprocessor:
 			try:
 				item_list = item.split(' ')
 				for num in item_list:
-					int(num)
-					str_num = str(bin(abs(int(num))))
+					if isinstance(num, int):
+						str_num = str(bin(abs(int(num))))
+					else:
+						str_num = bin(struct.unpack('!i',struct.pack('!f', float(num)))[0]).replace("-", "")
 
 					for i in range(64 - len(str_num[2:])):
 						bin_list.append('0')
