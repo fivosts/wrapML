@@ -220,10 +220,10 @@ class architecture:
 				out = this.execute_network(tr_data)
 
 				if "pass" in tr_data['label']:
-					target = torch.tensor([[1.]])
+					target = torch.tensor([[1.]]).cuda()
 					weight = loss_function['weight']['pass']
 				elif "fail" in tr_data['label']:
-					target = torch.tensor([[0.]])
+					target = torch.tensor([[0.]]).cuda()
 					weight = loss_function['weight']['fail']
 				else:
 					assert False, "Unrecognized label"
