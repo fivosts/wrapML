@@ -58,7 +58,8 @@ class mail_agent:
             if "$cmd" in line:
                 command_str = ":".join(line.split(':')[1:])
                 print(command_str)
-                command = command_str.split(';')
+                command = [x.split() for x in command_str.split(';') if x]
+                print(command)
                 break
 
         assert len(command) != 0, "Command field not extracted successfully!"
@@ -67,7 +68,7 @@ class mail_agent:
     def execute_instructions(this, cmd):
 
         for c in cmd:
-            proc = subprocess.Popen(c.split(), stdout=subprocess.PIPE)
+            proc = subprocess.Popen(c, stdout=subprocess.PIPE)
             out, err = proc.communicate()
             print(out.decode("utf-8"))
         return
@@ -108,5 +109,5 @@ class mail_agent:
 
 mail = mail_agent()
 # mail.broadcast_error("Training new script", "Something veeeerry bad happened!!!", request_reply = True)
-mail.receive_instruction()
+mail.execute_instructions(mail.receive_instruction())
 # mail.mailbox_check_wait("hello")
