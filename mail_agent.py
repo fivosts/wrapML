@@ -58,7 +58,6 @@ class mail_agent:
             if "$cmd" in line:
                 command_str = ":".join(line.split(':')[1:])
                 print(command_str)
-                print(type(command_str))
                 command = command_str.split(';')
                 break
 
@@ -108,6 +107,6 @@ class mail_agent:
         return result, data
 
 mail = mail_agent()
-mail.broadcast_error("Training new script", "Something veeeerry bad happened!!!", request_reply = True)
-# mail.receive_instruction()
+# mail.broadcast_error("Training new script", "Something veeeerry bad happened!!!", request_reply = True)
+mail.receive_instruction()
 # mail.mailbox_check_wait("hello")
