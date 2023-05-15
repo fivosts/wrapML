@@ -3,6 +3,11 @@ import os, sys
 import matplotlib
 # matplotlib.use('GTK3Cairo')
 import matplotlib.pyplot as plt
+from matplotlib import rc
+#rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+rc('font',**{'family':'serif','serif':['Times']})
+rc('text', usetex=False)
+
 import numpy as np
 import seaborn as sns
 
@@ -219,11 +224,11 @@ class plotter:
 			ax.title.set_position([.5, 1.02])
 			ax.plot(x_axis, pr, '-x', color = '#006d2c', label='precision', linewidth = 2, mew=2, ms=7)
 			ax2.plot(x_axis, rec, '-x', color = '#fc9272', label='recall', linewidth = 2, mew=2, ms=7)
-			ax.tick_params(labelsize = 21)
-			ax2.tick_params(labelsize = 21)
+			ax.tick_params(labelsize = 21, width = 0.7)
+			ax2.tick_params(labelsize = 21, width = 0.7)
 			ax.set_ylabel('Precision', color = '#006d2c', fontsize = 28)
 			ax2.set_ylabel('Recall', color = '#fc9272', fontsize = 28)
-			ax.set_xlabel("% traces used in training", fontsize = 28, labelpad = 10)
+			ax.set_xlabel("% traces used in training", color="black", fontsize = 28, labelpad = 10)
 
 			ax.yaxis.grid(False) #horizontal grid
 			ax.xaxis.grid(False) #horizontal grid
@@ -236,17 +241,19 @@ class plotter:
 			ax.set_xlabel('Epochs')
 			ax.legend(loc='lower right', fontsize = 12, markerfirst = False, frameon = False)
 
-		ax.set_ylim([0.3, 1.05])
+		ax.set_ylim([0.0, 1.05])
+		ax2.set_ylim([0.0, 1.05])
 		# limit = round(max(0, min(0.3, min(min(pr), min(rec)) - 0.1)), 1)
-		# plt.yticks(np.arange(0.4, 1.0, 0.2))
-		# ax.grid(which='major', alpha=0.7, linestyle = '-', axis = 'y')
+		plt.yticks(np.arange(0.0, 1.1, 0.2))
 
 		if dual_axis == True:
-			ax2.set_ylim([0.3, 1.05])
+			pass
+			# ax2.set_ylim([0.3, 1.05])
 			# limit2 = round(max(0, min(0.3, min(min(pr), min(rec)) - 0.1)), 1)
-			# plt.yticks(np.arange(0.0, 1.1, 0.1))
-			# ax2.set_yticks(np.arange(0.4, 1.0, 0.2))
+			# plt.yticks(np.arange(0.0, 1.1, 0.2))
+			# ax2.set_yticks(np.arange(0.0, 1.1, 0.2))
 			# ax2.grid(which='major', alpha=0.7, linestyle = '--', axis = 'y')
+			# ax.grid(which='major', alpha=0.7, linestyle = '-', axis = 'y')
 
 		# plt.show()
 		plt.savefig(plot_name + '.png', bbox_inches="tight", format='png')
